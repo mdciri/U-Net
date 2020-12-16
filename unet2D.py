@@ -103,8 +103,9 @@ class unet(object):
         return y_pred
     
     def calculate_metrics(self, y_true_flat, y_pred_flat):
-        
-        cm = tf.math.confusion_matrix(y_true_flat, y_pred_flat, num_classes=2).numpy() #confusion_matrix(y_true_flat, y_pred_flat, labels=[0,1]) 
+        ''' This function calculates the metrics accuracy and Dice between two binary arrays.
+        '''
+        cm = tf.math.confusion_matrix(y_true_flat, y_pred_flat, num_classes=2).numpy()
         acc = np.trace(cm)/np.sum(cm)
         if cm[0,0] == len(y_true_flat):
             dice = np.nan
