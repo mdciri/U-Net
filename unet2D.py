@@ -1,5 +1,5 @@
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Conv2D, Activation, BatchNormalization, MaxPool2D, Conv2DTranspose, Dropout, concatenate
+from tensorflow.keras.layers import Input, Conv2D, Activation, BatchNormalization, Conv2DTranspose, Dropout, concatenate
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 
