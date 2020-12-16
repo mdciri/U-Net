@@ -39,7 +39,7 @@ class unet(object):
             return x
             
         # This is a help function that defines what happens in each layer of the encoder (downstream),
-        # which calls "convs" and then Maxpooling (2 x 2).
+        # which calls "convs" and then down-sampling (2 x 2).
         def encoder_step(layer, Nf):
             y = convs(layer, Nf)
             x = Conv2D(filters=Nf, kernel_size=(3,3), kernel_initializer='he_normal', padding='same', strides=(2,2))(y)
@@ -60,14 +60,12 @@ class unet(object):
         layers_to_concatenate = []
         x = inputs
         
-        # Make encoder with 'self.depth' layers, 
-        # note that the number of filters in each layer will double compared to the previous "step" in the encoder
+        # Make encoder
         for d in range(self.depth-1):
             y,x = encoder_step(x, self.Nfilter_start*np.power(2,d))
             layers_to_concatenate.append(y)
             
-        # Make bridge, that connects encoder and decoder using "convs" between them. 
-        # Use Dropout before and after the bridge, for regularization. Use drop probability of 0.2.
+        # Make bridge
         x = Dropout(0.2)(x)
         x = convs(x,self.Nfilter_start*np.power(2,self.depth-1))
         x = Dropout(0.2)(x)        
@@ -77,7 +75,7 @@ class unet(object):
             y = layers_to_concatenate.pop()
             x = decoder_step(x, y, self.Nfilter_start*np.power(2,d))            
         
-        # Make classification (segmentation) of each pixel, using convolution with 1 x 1 filter
+        # Make classificator
         final = Conv2D(filters=self.Nclasses, kernel_size=(1,1), activation = 'softmax', padding='same', kernel_initializer='he_normal')(x)
         
         # Create model
